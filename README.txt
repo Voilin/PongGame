@@ -1,0 +1,1 @@
+This is an implementation of the classic game Pong, written in C# using XNA Framework 4.0.
