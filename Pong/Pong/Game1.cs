@@ -29,6 +29,11 @@ namespace Pong
         const int WINDOW_WIDTH = 800;
         const int WINDOW_HEIGHT = 600;
 
+        // the ball and paddle objects
+        Ball pongBall;
+        Paddle leftPaddle;
+        Paddle rightPaddle;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -38,8 +43,7 @@ namespace Pong
             graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
             graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
 
-            // make the mouse visible
-            IsMouseVisible = true;
+            
         }
 
         /// <summary>
@@ -51,6 +55,12 @@ namespace Pong
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+
+            // make the mouse visible
+            IsMouseVisible = true;
+
+            // set the window title
+            this.Window.Title = "Pong";
 
             base.Initialize();
         }
@@ -64,7 +74,9 @@ namespace Pong
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // create ball and paddle objects
+            pongBall = new Ball(Content, new Vector2(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 10);
+            pongBall.GiveRandomVelocity();
         }
 
         /// <summary>
@@ -92,6 +104,8 @@ namespace Pong
             mouseState = Mouse.GetState();
             keyboardState = Keyboard.GetState();
 
+            // Update the ball and paddles
+            pongBall.Update(GraphicsDevice, gameTime);
 
             base.Update(gameTime);
         }
@@ -105,6 +119,10 @@ namespace Pong
             GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
+
+            // draw the ball and paddles
+
+            pongBall.Draw(spriteBatch);
 
             base.Draw(gameTime);
         }
