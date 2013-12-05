@@ -36,6 +36,26 @@ namespace Pong
 
         #region Properties
 
+        // returns the X coordinate of the ball
+        public int X_Coordinate
+        {
+            get { return ballRectangle.X; }
+            set { X_Coordinate = ballRectangle.X;}
+        }
+
+        // returns the Y coordinate of the ball
+        public int Y_Coordinate
+        {
+            get { return ballRectangle.Y; }
+            set { X_Coordinate = ballRectangle.X; }
+        }
+
+        // returns the diameter of the ball
+        public int Diameter
+        {
+            get { return ballRectangle.Width; }
+        }
+
         #endregion
 
         #region Constructors
@@ -106,18 +126,18 @@ namespace Pong
                 y_velocity = y_velocity * 1.1;
             }
 
-            // checks if the ball has bounced on the right or left of the screen
+            // checks if the ball has contacted the left or right hand side, and will then increment the scroes appropriately.
             if (ballRectangle.X <= 0)
             {
-                ballRectangle.X = 0;
-                x_velocity = -x_velocity;
-                x_velocity = x_velocity * 1.1;
+
+                // reset the ball back to the center and give it a velocity
+                ResetBall(graphicsDevice);
             }
             else if (ballRectangle.X + ballRectangle.Width>= graphicsDevice.Viewport.Width)
             {
-                ballRectangle.X = graphicsDevice.Viewport.Width - ballRectangle.Width;
-                x_velocity = -x_velocity;
-                x_velocity = x_velocity * 1.1;
+
+                // reset the ball back to the center and give it a velocity
+                ResetBall(graphicsDevice);
                 
             }
         }
