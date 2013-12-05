@@ -113,11 +113,12 @@ namespace Pong
                 x_velocity = -x_velocity;
                 x_velocity = x_velocity * 1.1;
             }
-            else if (ballRectangle.X >= graphicsDevice.Viewport.Width + ballRectangle.Width)
+            else if (ballRectangle.X + ballRectangle.Width>= graphicsDevice.Viewport.Width)
             {
                 ballRectangle.X = graphicsDevice.Viewport.Width - ballRectangle.Width;
                 x_velocity = -x_velocity;
                 x_velocity = x_velocity * 1.1;
+                
             }
         }
 

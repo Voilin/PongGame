@@ -77,6 +77,9 @@ namespace Pong
             // create ball and paddle objects
             pongBall = new Ball(Content, new Vector2(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 10);
             pongBall.GiveRandomVelocity();
+
+            leftPaddle = new Paddle(Content, 100, 20, "left", GraphicsDevice);
+            rightPaddle = new Paddle(Content, 100, 20, "right", GraphicsDevice);
         }
 
         /// <summary>
@@ -107,6 +110,9 @@ namespace Pong
             // Update the ball and paddles
             pongBall.Update(GraphicsDevice, gameTime);
 
+            leftPaddle.Update(gameTime, keyboardState, GraphicsDevice);
+            rightPaddle.Update(gameTime, keyboardState, GraphicsDevice);
+
             base.Update(gameTime);
         }
 
@@ -123,6 +129,9 @@ namespace Pong
             // draw the ball and paddles
 
             pongBall.Draw(spriteBatch);
+
+            rightPaddle.Draw(spriteBatch);
+            leftPaddle.Draw(spriteBatch);
 
             base.Draw(gameTime);
         }

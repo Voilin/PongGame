@@ -36,10 +36,36 @@ namespace Pong
 
         #region Properties
 
-        // gets the top Y coordinate of the paddle
+        // gets the y coordinate of the top of the paddle
         public int topY_Coordinate
         {
-            get { return paddleRectangle.Top;}
+            get { return paddleRectangle.Y;}
+        }
+
+        // gets the y coordinate of the bottom of the paddle
+        public int bottomY_Coordinate
+        {
+            get { return paddleRectangle.Y + paddleRectangle.Height; }
+        }
+
+        // gets the inward facing sides x coordinate
+        public int inwardX_Coordinate
+        {
+            get
+            {
+                if (boardSide.ToLower() == "right")
+                {
+                    return paddleRectangle.X;
+                }
+                else if (boardSide.ToLower() == "left")
+                {
+                    return paddleRectangle.X + paddleRectangle.Width;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
         }
 
         // gets and sets wether the paddle is active
@@ -69,7 +95,7 @@ namespace Pong
             if (_boardSide.ToLower() == "left")
             {
                 boardSide = "left";
-                paddleRectangle = new Rectangle(0,
+                paddleRectangle = new Rectangle(30,
                                                (_graphicsDevice.Viewport.Height / 2) - (_height / 2),
                                                _width,
                                                _height);
@@ -79,7 +105,7 @@ namespace Pong
             else if (_boardSide.ToLower() == "right")
             {
                 boardSide = "right";
-                paddleRectangle = new Rectangle((_graphicsDevice.Viewport.Width - _width),
+                paddleRectangle = new Rectangle((_graphicsDevice.Viewport.Width - _width - 30),
                                                (_graphicsDevice.Viewport.Height / 2) - (_height / 2),
                                                _width,
                                                _height);
@@ -120,11 +146,11 @@ namespace Pong
                 // checks which keyboard button is currently pressed and moves in the respective direction
                 if (keyboardState.IsKeyDown(Keys.Up))
                 {
-                    y_velocity = MAX_Y_VELOCITY;
+                    y_velocity =  - MAX_Y_VELOCITY;
                 }
                 else if (keyboardState.IsKeyDown(Keys.Down))
                 {
-                    y_velocity = -MAX_Y_VELOCITY;
+                    y_velocity = MAX_Y_VELOCITY;
                 }
                 else
                 {
@@ -136,11 +162,11 @@ namespace Pong
                 // checks which keyboard button is currently pressed and moves in the respective direction
                 if (keyboardState.IsKeyDown(Keys.W))
                 {
-                    y_velocity = MAX_Y_VELOCITY;
+                    y_velocity = -MAX_Y_VELOCITY;
                 }
                 else if (keyboardState.IsKeyDown(Keys.S))
                 {
-                    y_velocity = -MAX_Y_VELOCITY;
+                    y_velocity = MAX_Y_VELOCITY;
                 }
                 else
                 {
@@ -151,13 +177,13 @@ namespace Pong
             // updates the paddles y co-ordinate based on the velocity
             paddleRectangle.Y += y_velocity;
 
-            if (paddleRectangle.Top <= 0)
+            if (paddleRectangle.Y <= 0)
             {
-                paddleRectangle.Y = 0 + paddleRectangle.Height;
+                paddleRectangle.Y = 0;
             }
-            else if (paddleRectangle.Bottom >= graphicsDevice.Viewport.Height)
+            else if (paddleRectangle.Y + paddleRectangle.Height >= graphicsDevice.Viewport.Height)
             {
-                paddleRectangle.Y = graphicsDevice.Viewport.Height;
+                paddleRectangle.Y = graphicsDevice.Viewport.Height - paddleRectangle.Height;
             }
         }
 
@@ -184,7 +210,7 @@ namespace Pong
         private void LoadContent(ContentManager contentManager)
         {
             // Load the paddles texture.
-            paddleTexture = contentManager.Load<Texture2D>("paddleTexture");
+            paddleTexture = contentManager.Load<Texture2D>("paddle");
         }
 
         #endregion
