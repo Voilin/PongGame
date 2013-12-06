@@ -26,8 +26,8 @@ namespace Pong
         Rectangle paddleRectangle;
 
         // movement aids
-        int y_velocity;
-        const int MAX_Y_VELOCITY = 3;
+        double y_velocity;
+        const int MAX_Y_VELOCITY = 6;
 
         // texture for the paddle
         Texture2D paddleTexture;
@@ -37,19 +37,19 @@ namespace Pong
         #region Properties
 
         // gets the y coordinate of the top of the paddle
-        public int topY_Coordinate
+        public int TopY_Coordinate
         {
             get { return paddleRectangle.Y;}
         }
 
         // gets the y coordinate of the bottom of the paddle
-        public int bottomY_Coordinate
+        public int BottomY_Coordinate
         {
             get { return paddleRectangle.Y + paddleRectangle.Height; }
         }
 
         // gets the inward facing sides x coordinate
-        public int inwardX_Coordinate
+        public int InwardX_Coordinate
         {
             get
             {
@@ -66,6 +66,11 @@ namespace Pong
                     return 0;
                 }
             }
+        }
+
+        public int Width
+        {
+            get { return paddleRectangle.Width; }
         }
 
         // gets and sets wether the paddle is active
@@ -146,11 +151,17 @@ namespace Pong
                 // checks which keyboard button is currently pressed and moves in the respective direction
                 if (keyboardState.IsKeyDown(Keys.Up))
                 {
-                    y_velocity =  - MAX_Y_VELOCITY;
+                    if (y_velocity < MAX_Y_VELOCITY)
+                    {
+                        y_velocity -= 0.5;
+                    }
                 }
                 else if (keyboardState.IsKeyDown(Keys.Down))
                 {
-                    y_velocity = MAX_Y_VELOCITY;
+                    if (y_velocity >  - MAX_Y_VELOCITY)
+                    {
+                        y_velocity += 0.5;
+                    }
                 }
                 else
                 {
@@ -162,11 +173,17 @@ namespace Pong
                 // checks which keyboard button is currently pressed and moves in the respective direction
                 if (keyboardState.IsKeyDown(Keys.W))
                 {
-                    y_velocity = -MAX_Y_VELOCITY;
+                    if (y_velocity < MAX_Y_VELOCITY)
+                    {
+                        y_velocity -= 0.5;
+                    }
                 }
                 else if (keyboardState.IsKeyDown(Keys.S))
                 {
-                    y_velocity = MAX_Y_VELOCITY;
+                    if (y_velocity >  - MAX_Y_VELOCITY)
+                    {
+                        y_velocity += 0.5;
+                    }
                 }
                 else
                 {
@@ -175,7 +192,7 @@ namespace Pong
             }
 
             // updates the paddles y co-ordinate based on the velocity
-            paddleRectangle.Y += y_velocity;
+            paddleRectangle.Y += (int)y_velocity;
 
             if (paddleRectangle.Y <= 0)
             {

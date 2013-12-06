@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+
 namespace Pong
 {
     class Ball
@@ -27,6 +28,10 @@ namespace Pong
         Texture2D ballTexture;
         Rectangle ballRectangle;
 
+        // Audio components
+        WaveBank waveBank;
+        SoundBank soundBank;
+        AudioEngine audioEngine;
 
         Random rand = new Random();
 
@@ -56,6 +61,13 @@ namespace Pong
             get { return ballRectangle.Width; }
         }
 
+        // gets and sets the x_velocity of the ball
+        public double X_Velocity
+        {
+            get { return x_velocity; }
+            set { this.X_Velocity = x_velocity; }
+        }
+
         #endregion
 
         #region Constructors
@@ -83,9 +95,15 @@ namespace Pong
         /// <param name="graphicsDevice">the graphics device</param>
         public void ResetBall(GraphicsDevice graphicsDevice)
         {
+            
             // reset the ball back to the center
             ballRectangle.X = (graphicsDevice.Viewport.Width / 2) + (ballRectangle.Width / 2);
             ballRectangle.Y = (graphicsDevice.Viewport.Height / 2) - (ballRectangle.Height / 2);
+
+            // reset velocities and set new ones
+            x_velocity = 0;
+            y_velocity = 0;
+            GiveRandomVelocity();
         }
 
         /// <summary>
@@ -93,12 +111,22 @@ namespace Pong
         /// </summary>
         public void GiveRandomVelocity()
         {
+            // reset the random seed
+            Random rand = new Random();
+
             // give the ball new random x and y velocities
             while (x_velocity == 0 || y_velocity == 0)
             {
                 x_velocity = rand.Next(-MAX_INITIAL_VELOCITY, MAX_INITIAL_VELOCITY);
                 y_velocity = rand.Next(-MAX_INITIAL_VELOCITY, MAX_INITIAL_VELOCITY);
             }
+        }
+
+        public void BounceX()
+        {
+            x_velocity = -x_velocity;
+            x_velocity = x_velocity * 1.1;
+            y_velocity = y_velocity * 1.1;
         }
 
 
@@ -117,22 +145,24 @@ namespace Pong
             {
                 ballRectangle.Y = 0 + ballRectangle.Height ;
                 y_velocity = -y_velocity;
-                y_velocity = y_velocity * 1.1;
+                soundBank.PlayCue("Pong");
             }
             else if (ballRectangle.Y + ballRectangle.Height >= graphicsDevice.Viewport.Height)
             {
                 ballRectangle.Y = graphicsDevice.Viewport.Height - ballRectangle.Height;
                 y_velocity = -y_velocity;
-                y_velocity = y_velocity * 1.1;
+                soundBank.PlayCue("Pong");
+                
             }
 
             // checks if the ball has contacted the left or right hand side, and will then increment the scroes appropriately.
             if (ballRectangle.X <= 0)
             {
-
+     
                 // reset the ball back to the center and give it a velocity
                 ResetBall(graphicsDevice);
             }
+
             else if (ballRectangle.X + ballRectangle.Width>= graphicsDevice.Viewport.Width)
             {
 
@@ -166,6 +196,9 @@ namespace Pong
         private void LoadContent(ContentManager contentManager)
         {
             ballTexture = contentManager.Load<Texture2D>("ball");
+            audioEngine = new AudioEngine(@"Content/Pong.xgs");
+            waveBank = new WaveBank(audioEngine, @"Content/Wave Bank.xwb");
+            soundBank = new SoundBank(audioEngine, @"Content/Sound Bank.xsb");
         }
         #endregion
 

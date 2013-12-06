@@ -34,6 +34,11 @@ namespace Pong
         Paddle leftPaddle;
         Paddle rightPaddle;
 
+        // audio support
+        AudioEngine audioEngine;
+        SoundBank soundBank;
+        WaveBank waveBank;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -80,6 +85,11 @@ namespace Pong
 
             leftPaddle = new Paddle(Content, 100, 20, "left", GraphicsDevice);
             rightPaddle = new Paddle(Content, 100, 20, "right", GraphicsDevice);
+
+            // load audio components
+            audioEngine = new AudioEngine(@"Content/Pong.xgs");
+            waveBank = new WaveBank(audioEngine, @"Content/Wave Bank.xwb");
+            soundBank = new SoundBank(audioEngine, @"Content/Sound Bank.xsb");
         }
 
         /// <summary>
@@ -113,6 +123,25 @@ namespace Pong
             leftPaddle.Update(gameTime, keyboardState, GraphicsDevice);
             rightPaddle.Update(gameTime, keyboardState, GraphicsDevice);
 
+            if (pongBall.X_Coordinate <= leftPaddle.InwardX_Coordinate)
+            {
+                if (pongBall.Y_Coordinate >= leftPaddle.TopY_Coordinate &&
+                    pongBall.Y_Coordinate <= leftPaddle.BottomY_Coordinate)
+                {
+                    pongBall.BounceX();
+                    soundBank.PlayCue("Pong");
+                }
+            }
+            else if (pongBall.X_Coordinate + pongBall.Diameter >= rightPaddle.InwardX_Coordinate)
+            {
+                if (pongBall.Y_Coordinate >= rightPaddle.TopY_Coordinate &&
+                    pongBall.Y_Coordinate <= rightPaddle.BottomY_Coordinate)
+                {
+                    pongBall.BounceX();
+                    soundBank.PlayCue("Pong");
+                }
+            }
+
             base.Update(gameTime);
         }
 
@@ -123,8 +152,6 @@ namespace Pong
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
-            // TODO: Add your drawing code here
 
             // draw the ball and paddles
 
