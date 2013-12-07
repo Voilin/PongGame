@@ -39,6 +39,14 @@ namespace Pong
         SoundBank soundBank;
         WaveBank waveBank;
 
+        // rectangle for the board to be drawn in and texture
+        Rectangle boardRectangle;
+        Texture2D boardTexture;
+
+        // both players scores
+        Score playerOneScore;
+        Score playerTwoScore;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -90,6 +98,13 @@ namespace Pong
             audioEngine = new AudioEngine(@"Content/Pong.xgs");
             waveBank = new WaveBank(audioEngine, @"Content/Wave Bank.xwb");
             soundBank = new SoundBank(audioEngine, @"Content/Sound Bank.xsb");
+
+            // set the board rectangle to the size of the window, load the board texture
+            boardRectangle = new Rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+            boardTexture = Content.Load<Texture2D>("board");
+
+            playerOneScore = new Score(Content, new Vector2(WINDOW_WIDTH / 4, 25), 39, 75);
+            playerTwoScore = new Score (Content, new Vector2 ((3 * (WINDOW_WIDTH / 4)), 25), 39, 75);
         }
 
         /// <summary>
@@ -142,6 +157,22 @@ namespace Pong
                 }
             }
 
+
+            // check if the scores need to be incremented
+            if (pongBall.X_Coordinate <= 0)
+            {
+                playerTwoScore.IncrementScore();
+
+                pongBall.ResetBall(GraphicsDevice);
+                pongBall.GiveRandomVelocity();
+            }
+            else if (pongBall.X_Coordinate + pongBall.Diameter >= WINDOW_WIDTH)
+            {
+                playerOneScore.IncrementScore();
+
+                pongBall.ResetBall(GraphicsDevice);
+                pongBall.GiveRandomVelocity();
+            }
             base.Update(gameTime);
         }
 
@@ -153,12 +184,23 @@ namespace Pong
         {
             GraphicsDevice.Clear(Color.Black);
 
+            spriteBatch.Begin();
+
+            spriteBatch.Draw(boardTexture, boardRectangle, Color.White);
+
+            spriteBatch.End();
+
             // draw the ball and paddles
 
             pongBall.Draw(spriteBatch);
-
             rightPaddle.Draw(spriteBatch);
             leftPaddle.Draw(spriteBatch);
+
+            // draw both players scores
+            playerOneScore.Draw(spriteBatch);
+            playerTwoScore.Draw(spriteBatch);
+
+            
 
             base.Draw(gameTime);
         }

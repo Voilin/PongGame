@@ -143,7 +143,7 @@ namespace Pong
             // checks if the ball has bounced on the top or bottom of the screen
             if (ballRectangle.Y<= 0)
             {
-                ballRectangle.Y = 0 + ballRectangle.Height ;
+                ballRectangle.Y = 0 ;
                 y_velocity = -y_velocity;
                 soundBank.PlayCue("Pong");
             }
@@ -152,22 +152,6 @@ namespace Pong
                 ballRectangle.Y = graphicsDevice.Viewport.Height - ballRectangle.Height;
                 y_velocity = -y_velocity;
                 soundBank.PlayCue("Pong");
-                
-            }
-
-            // checks if the ball has contacted the left or right hand side, and will then increment the scroes appropriately.
-            if (ballRectangle.X <= 0)
-            {
-     
-                // reset the ball back to the center and give it a velocity
-                ResetBall(graphicsDevice);
-            }
-
-            else if (ballRectangle.X + ballRectangle.Width>= graphicsDevice.Viewport.Width)
-            {
-
-                // reset the ball back to the center and give it a velocity
-                ResetBall(graphicsDevice);
                 
             }
         }
