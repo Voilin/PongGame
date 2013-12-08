@@ -65,7 +65,14 @@ namespace Pong
         public double X_Velocity
         {
             get { return x_velocity; }
-            set { this.X_Velocity = x_velocity; }
+            set { x_velocity = X_Velocity; }
+        }
+
+        // gets and sets the y_velocity of the ball
+        public double Y_Velocity
+        {
+            get { return y_velocity; }
+            set { y_velocity = Y_Velocity; }
         }
 
         #endregion
@@ -122,6 +129,9 @@ namespace Pong
             }
         }
 
+        /// <summary>
+        /// Bounces the ball 
+        /// </summary>
         public void BounceX()
         {
             x_velocity = -x_velocity;
@@ -129,6 +139,14 @@ namespace Pong
             y_velocity = y_velocity * 1.1;
         }
 
+        /// <summary>
+        /// Updates the balls y-velocity based on the y-velocity of the paddle that it has bounced off.
+        /// </summary>
+        /// <param name="paddle_Y_Velocity">the paddles y-velocity</param>
+        public void BouncePaddleYVelocity(double paddle_Y_Velocity)
+        {
+            y_velocity = y_velocity + (0.2 * paddle_Y_Velocity);
+        }
 
         /// <summary>
         /// Updates the location of the ball, and checks if it should bounce off of anything

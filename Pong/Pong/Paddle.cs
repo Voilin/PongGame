@@ -19,8 +19,9 @@ namespace Pong
         #region Fields
 
         // gameplay aids
-        bool active;
+        bool paddleActive;
         string boardSide;
+        bool paddleStopped;
         
         //drawing aids
         Rectangle paddleRectangle;
@@ -68,6 +69,7 @@ namespace Pong
             }
         }
 
+        // gets the width of the paddle
         public int Width
         {
             get { return paddleRectangle.Width; }
@@ -76,8 +78,14 @@ namespace Pong
         // gets and sets wether the paddle is active
         public bool Active
         {
-            get { return active; }
-            set { Active = active; }
+            get { return paddleActive; }
+            set { paddleActive = Active; }
+        }
+
+        // gets the y velocity of the paddle
+        public double Y_Velocity
+        {
+            get { return y_velocity; }
         }
 
         #endregion
@@ -104,6 +112,7 @@ namespace Pong
                                                (_graphicsDevice.Viewport.Height / 2) - (_height / 2),
                                                _width,
                                                _height);
+                paddleActive = true;
             }
 
             // creates a paddle on the right hand side of the board
@@ -114,27 +123,11 @@ namespace Pong
                                                (_graphicsDevice.Viewport.Height / 2) - (_height / 2),
                                                _width,
                                                _height);
+                paddleActive = true;
             }
             
         }
 
-        /// <summary>
-        /// Creates a paddle with given texture, board side, height and width
-        /// </summary>
-        /// <param name="contentManager">the content manager</param>
-        /// <param name="height">the height of the paddle</param>
-        /// <param name="width">the width of the paddle</param>
-        /// <param name="boardSide">the side of the board the paddle will be on</param>
-        /// <param name="paddleTexture">the paddles texture</param>
-        //public Paddle(ContentManager contentManager, int height, int width, string boardSide, Texture2D paddleTexture)
-        //{
-
-        //}
-
-        //public Paddle(ContentManager contentManager, int height, int width, string boardSide, Vector2 paddleLocation)
-        //{
-
-        //}
         #endregion
 
         #region Public methods
@@ -149,18 +142,20 @@ namespace Pong
             if (boardSide.ToLower() == "right")
             {
                 // checks which keyboard button is currently pressed and moves in the respective direction
-                if (keyboardState.IsKeyDown(Keys.Up))
+                if (keyboardState.IsKeyDown(Keys.Up) && paddleActive)
                 {
                     if (y_velocity < MAX_Y_VELOCITY)
                     {
                         y_velocity -= 0.5;
+                        paddleStopped = false;
                     }
                 }
-                else if (keyboardState.IsKeyDown(Keys.Down))
+                else if (keyboardState.IsKeyDown(Keys.Down) && paddleActive)
                 {
                     if (y_velocity >  - MAX_Y_VELOCITY)
                     {
                         y_velocity += 0.5;
+                        paddleStopped = false;
                     }
                 }
                 else
@@ -171,18 +166,20 @@ namespace Pong
             else if (boardSide.ToLower() == "left")
             {
                 // checks which keyboard button is currently pressed and moves in the respective direction
-                if (keyboardState.IsKeyDown(Keys.W))
+                if (keyboardState.IsKeyDown(Keys.W) && paddleActive)
                 {
                     if (y_velocity < MAX_Y_VELOCITY)
                     {
                         y_velocity -= 0.5;
+                        paddleStopped = false;
                     }
                 }
-                else if (keyboardState.IsKeyDown(Keys.S))
+                else if (keyboardState.IsKeyDown(Keys.S) && paddleActive)
                 {
                     if (y_velocity >  - MAX_Y_VELOCITY)
                     {
                         y_velocity += 0.5;
+                        paddleStopped = false;
                     }
                 }
                 else
@@ -194,13 +191,18 @@ namespace Pong
             // updates the paddles y co-ordinate based on the velocity
             paddleRectangle.Y += (int)y_velocity;
 
-            if (paddleRectangle.Y <= 0)
+            if (paddleRectangle.Y <= 0 && paddleStopped == false)
             {
                 paddleRectangle.Y = 0;
+                y_velocity = 0;
+                paddleStopped = true;
+                
             }
-            else if (paddleRectangle.Y + paddleRectangle.Height >= graphicsDevice.Viewport.Height)
+            else if (paddleRectangle.Y + paddleRectangle.Height >= graphicsDevice.Viewport.Height && paddleStopped == false)
             {
                 paddleRectangle.Y = graphicsDevice.Viewport.Height - paddleRectangle.Height;
+                y_velocity = 0;
+                paddleStopped = true;
             }
         }
 

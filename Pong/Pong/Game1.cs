@@ -138,21 +138,27 @@ namespace Pong
             leftPaddle.Update(gameTime, keyboardState, GraphicsDevice);
             rightPaddle.Update(gameTime, keyboardState, GraphicsDevice);
 
-            if (pongBall.X_Coordinate <= leftPaddle.InwardX_Coordinate)
+            if (pongBall.X_Coordinate <= leftPaddle.InwardX_Coordinate &&
+                pongBall.X_Coordinate >= leftPaddle.InwardX_Coordinate - leftPaddle.Width)
             {
                 if (pongBall.Y_Coordinate >= leftPaddle.TopY_Coordinate &&
                     pongBall.Y_Coordinate <= leftPaddle.BottomY_Coordinate)
                 {
+                    // bounces the ball, and then updates its y velocity based on a percentage of the paddles y_velocity
                     pongBall.BounceX();
+                    pongBall.BouncePaddleYVelocity(leftPaddle.Y_Velocity);
                     soundBank.PlayCue("Pong");
                 }
             }
-            else if (pongBall.X_Coordinate + pongBall.Diameter >= rightPaddle.InwardX_Coordinate)
+            else if (pongBall.X_Coordinate + pongBall.Diameter >= rightPaddle.InwardX_Coordinate &&
+                     pongBall.X_Coordinate + pongBall.Diameter <= rightPaddle.InwardX_Coordinate + rightPaddle.Width)
             {
                 if (pongBall.Y_Coordinate >= rightPaddle.TopY_Coordinate &&
                     pongBall.Y_Coordinate <= rightPaddle.BottomY_Coordinate)
                 {
+                    // bounces the ball, and then updates its y velocity based on a percentage of the paddles y_velocity
                     pongBall.BounceX();
+                    pongBall.BouncePaddleYVelocity(rightPaddle.Y_Velocity);
                     soundBank.PlayCue("Pong");
                 }
             }
@@ -173,6 +179,14 @@ namespace Pong
                 pongBall.ResetBall(GraphicsDevice);
                 pongBall.GiveRandomVelocity();
             }
+
+            // checks if either player has one
+            if (playerOneScore.Value >= 2 || playerTwoScore.Value >= 2)
+            {
+                leftPaddle.Active = false;
+                rightPaddle.Active = false;
+            }
+
             base.Update(gameTime);
         }
 
@@ -186,12 +200,12 @@ namespace Pong
 
             spriteBatch.Begin();
 
+            // draw the background textures
             spriteBatch.Draw(boardTexture, boardRectangle, Color.White);
 
             spriteBatch.End();
 
             // draw the ball and paddles
-
             pongBall.Draw(spriteBatch);
             rightPaddle.Draw(spriteBatch);
             leftPaddle.Draw(spriteBatch);

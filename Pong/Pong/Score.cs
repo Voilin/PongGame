@@ -47,8 +47,6 @@ namespace Pong
         Texture2D eightTexture;
         Texture2D nineTexture;
 
-        Texture2D activeTexture;
-
         #endregion
 
         #region Properties
